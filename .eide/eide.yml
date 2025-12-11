@@ -3,7 +3,13 @@ name: CH32
 type: ARM
 deviceName: CH32F103C8
 packDir: .pack/Keil/WCH32F1xx_DFP.1.0.2
-srcDirs: []
+srcDirs:
+  - Application
+  - build
+  - CMSIS
+  - Firmware
+  - Peripheral
+  - Utilities
 virtualFolder:
   name: <virtual_root>
   files: []
@@ -16,9 +22,15 @@ targets:
   Debug:
     cppPreprocessAttrs:
       defineList: []
-      incList: []
+      incList:
+        - Application
+        - build
+        - Firmware
+        - Peripheral
+        - Peripheral/inc
       libList: []
-    excludeList: []
+    excludeList:
+      - Peripheral/inc
     toolchain: AC6
     toolchainConfigMap:
       AC6:
