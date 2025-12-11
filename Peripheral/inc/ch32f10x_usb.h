@@ -512,7 +512,13 @@ extern "C" {
 #endif
 
 #ifndef __PACKED
-#define	__PACKED			__packed	
+#if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+#define __PACKED            __attribute__((packed))
+#elif defined(__CC_ARM)
+#define __PACKED            __packed
+#else
+#define __PACKED            __attribute__((packed))
+#endif
 #endif
 
 __PACKED typedef struct _USB_SETUP_REQ {
@@ -577,7 +583,7 @@ __PACKED typedef struct _USB_ENDPOINT_DESCR {
 } USB_ENDP_DESCR, *PUSB_ENDP_DESCR;
 
 
-__packed typedef struct _USB_CONFIG_DESCR_LONG {
+__PACKED typedef struct _USB_CONFIG_DESCR_LONG {
     USB_CFG_DESCR   cfg_descr;
     USB_ITF_DESCR   itf_descr;
     USB_ENDP_DESCR  endp_descr[1];

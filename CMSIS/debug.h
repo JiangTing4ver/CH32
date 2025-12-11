@@ -16,6 +16,15 @@
 extern "C" {
 #endif
 
+// Define __packed and __align for ARM Clang compiler
+#ifndef __packed
+#define __packed __attribute__((packed))
+#endif
+
+#ifndef __align
+#define __align(x) __attribute__((aligned(x)))
+#endif
+
 /* Debug output functions */
 #define DEBUG_PRINTF(...)    /* No operation by default */
 #define DEBUG_INFO(...)      /* No operation by default */

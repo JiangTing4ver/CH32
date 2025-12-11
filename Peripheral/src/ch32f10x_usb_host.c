@@ -11,6 +11,7 @@
 *******************************************************************************/
 #include "ch32f10x_usb_host.h"
 #include "debug.h"
+#include "delay.h"
 
 
 /******************************** HOST DEVICE **********************************/
@@ -20,7 +21,7 @@ _RootHubDev   ThisUsbDev;
 
 PUINT8  pHOST_RX_RAM_Addr;
 PUINT8  pHOST_TX_RAM_Addr;
-extern UINT8 Com_Buffer[128];
+UINT8 Com_Buffer[128];
 
 __align( 4 ) const UINT8  SetupGetDevDescr[] = { USB_REQ_TYP_IN, USB_GET_DESCRIPTOR, 0x00, USB_DESCR_TYP_DEVICE, 0x00, 0x00, sizeof( USB_DEV_DESCR ), 0x00 };
 
