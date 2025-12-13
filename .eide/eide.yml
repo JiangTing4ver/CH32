@@ -7,9 +7,9 @@ srcDirs:
   - Application
   - build
   - CMSIS
-  - Firmware
   - Peripheral
   - Utilities
+  - MyLib
 virtualFolder:
   name: <virtual_root>
   files: []
@@ -25,7 +25,6 @@ targets:
       incList:
         - Application
         - build
-        - Firmware
         - Peripheral
         - Peripheral/inc
       libList: []
