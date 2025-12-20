@@ -1,12 +1,8 @@
-#include "ch32f10x.h"
-#include "GPIO_contrl.h"
-#include "LED.h"
-#include "MH_Sersor.h"
+#include "HOME.h"
 
 #define LED 0
 #define HM 1
 
-// 在这里定义flag，选择使用哪个功能
 // #define flag LED  // 使用LED功能
 #define flag HM     // 使用传感器功能
 
