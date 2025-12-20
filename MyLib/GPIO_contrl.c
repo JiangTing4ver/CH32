@@ -1,6 +1,6 @@
 #include "GPIO_contrl.h"
 
-void GPIO_SetInit(uint32_t RCC_Periph_GPIOx, GPIO_TypeDef* GPIO_Port, uint16_t GPIO_Pin)
+void GPIO_OUT_SetInit(uint32_t RCC_Periph_GPIOx, GPIO_TypeDef* GPIO_Port, uint16_t GPIO_Pin)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
     
