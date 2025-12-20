@@ -1,4 +1,4 @@
-#include "ch32f10x.h"
+#include "GPIO_contrl.h"
 
 void GPIO_SetInit(uint32_t RCC_Periph_GPIOx, GPIO_TypeDef* GPIO_Port, uint16_t GPIO_Pin)
 {
