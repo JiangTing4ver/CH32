@@ -2,10 +2,11 @@
 
 #define LED 0
 #define HM 1
+#define GY520 2
 
 // #define flag LED  // 使用LED功能
-#define flag HM     // 使用传感器功能
-
+// #define flag HM     // 使用传感器功能
+#define flag GY520  // 使用GY520功能
 
 int main(void)
 {
@@ -22,6 +23,9 @@ int main(void)
     #elif flag == HM
         // 初始化传感器
         MH_Sersor_Init();
+    #elif flag == GY520
+        // 初始化GY520
+        GY520_Init();
     #endif
     
     while(1)
@@ -30,6 +34,8 @@ int main(void)
             LED_blink();
         #elif flag == HM
             Note();
+        #elif flag == GY520
+            GY520_Update();
         #endif  
     }
 }
