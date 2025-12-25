@@ -33,6 +33,7 @@ int main(void)
         USART1_Config(115200);
         // 初始化LED
         LED_Init();
+        printf("this a example for USART1 :) \n");
     #endif
     
     while(1)
@@ -44,7 +45,6 @@ int main(void)
         #elif flag == GY520
             GY520_Update();
         #elif flag == MyUSART1
-            printf("Please input command: ");
             RX_Process();
         #endif  
     }

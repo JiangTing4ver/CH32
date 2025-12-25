@@ -157,7 +157,7 @@ void USART1_IRQHandler(void)    //串口中断函数
 	if (USART_GetITStatus(USART1, USART_IT_RXNE)==SET)//当接收标志位为SET 开始接收
 	{
 		Data=USART_ReceiveData(USART1);//接收数据
-		// 发送收到的字符作为调试信息
+		// !!! 发送收到的字符作为调试信息
 		USART_SendData(USART1, Data);
 		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
 		
