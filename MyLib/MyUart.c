@@ -15,6 +15,10 @@ void USART1_Config(uint32_t BaudRate)
     // TX - PA9, RX - PA10
     GPIO_InitTypeDef  GPIO_InitStructure = {0};
 
+    // 使能GPIOA时钟
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    
+
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;  // 串口Tx必须配置为复用推挽
@@ -25,6 +29,7 @@ void USART1_Config(uint32_t BaudRate)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     
     // USART1 初始化配置
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);  // 使能USART1时钟
     USART_InitTypeDef USART_InitStructure = {0};
     USART_InitStructure.USART_BaudRate = BaudRate;        // 115200
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -132,7 +137,7 @@ void RX_Process(void)
         }
         else
         {
-            printf("Unknown command\n");
+            printf("Unknown command: %s\n", RX_Str);
         }
         
         // 清除接收标志位，准备下一次接收
@@ -152,6 +157,10 @@ void USART1_IRQHandler(void)    //串口中断函数
 	if (USART_GetITStatus(USART1, USART_IT_RXNE)==SET)//当接收标志位为SET 开始接收
 	{
 		Data=USART_ReceiveData(USART1);//接收数据
+		// 发送收到的字符作为调试信息
+		USART_SendData(USART1, Data);
+		while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET);
+		
 		if(RX_Status==0)					//若串口接收状态为状态0
 		{
 			if(Data=='@'&&Rx_FLAG==0)//判断接收到的数据是否为包头 @ 在Rx_FLAG=0情况下接收数据防止数据传输过快错乱
