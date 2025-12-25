@@ -3,10 +3,12 @@
 #define LED 0
 #define HM 1
 #define GY520 2
+#define MyUSART1 3
 
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
-#define flag GY520  // 使用GY520功能
+// #define flag GY520  // 使用GY520功能
+#define flag MyUSART1 // 使用USART1功能
 
 int main(void)
 {
@@ -26,6 +28,11 @@ int main(void)
     #elif flag == GY520
         // 初始化GY520
         GY520_Init();
+    #elif flag == MyUSART1
+        // 初始化USART1
+        USART1_Config(115200);
+        // 初始化LED
+        LED_Init();
     #endif
     
     while(1)
@@ -36,6 +43,9 @@ int main(void)
             Note();
         #elif flag == GY520
             GY520_Update();
+        #elif flag == MyUSART1
+            printf("Please input command: ");
+            RX_Process();
         #endif  
     }
 }
