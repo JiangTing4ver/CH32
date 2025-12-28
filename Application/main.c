@@ -12,19 +12,6 @@
 // #define flag MyUSART1 // 使用USART1功能
 #define flag WS2812  // 使用WS2812功能
 
-
-void PA8_test(void)
-{
-    // 使能GPIOA时钟
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    GPIO_InitTypeDef GPIO_InitStruct;
-    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_8;
-
-    GPIO_Init(GPIOA, &GPIO_InitStruct);
-}
-
 int main(void)
 {
     
@@ -66,7 +53,7 @@ int main(void)
         #elif flag == MyUSART1
             RX_Process();
         #elif flag == WS2812
-            WS2812_Fill(WS2812_CreateColor(255, 0, 0));
+            WS2812_RainbowWaterFlowEffect(200);
         #endif  
     }
 }
