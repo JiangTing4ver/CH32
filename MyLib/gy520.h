@@ -73,5 +73,6 @@ u8 GY520_GetRawData(GY520_Data_t *data);
 u8 GY520_GetScaledData(GY520_Data_t *data);
 u8 GY520_SetGyroRange(u8 range);
 u8 GY520_SetAccelRange(u8 range);
+void GY520_Update(void);
 
 #endif // __GY520_H__

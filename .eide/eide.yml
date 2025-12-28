@@ -42,16 +42,15 @@ targets:
           afterBuildTasks: []
           asm-compiler:
             $use: asm-auto
-            misc-controls: ""
           beforeBuildTasks: []
           c/cpp-compiler:
             language-c: c99
             language-cpp: c++11
-            link-time-optimization: false
             optimization: level-0
+            warnings: ac5-like-warnings
           global:
             output-debug-info: enable
-            use-microLIB: false
+            use-microLIB: true
           linker:
             $outputTaskExcludes:
               - .bin

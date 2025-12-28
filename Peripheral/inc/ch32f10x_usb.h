@@ -521,7 +521,7 @@ extern "C" {
 #endif
 #endif
 
-__PACKED typedef struct _USB_SETUP_REQ {
+typedef struct __PACKED _USB_SETUP_REQ {
     UINT8 bRequestType;
     UINT8 bRequest;
     UINT16 wValue;
@@ -530,7 +530,7 @@ __PACKED typedef struct _USB_SETUP_REQ {
 } USB_SETUP_REQ, *PUSB_SETUP_REQ;
 
 
-__PACKED typedef struct _USB_DEVICE_DESCR {
+typedef struct __PACKED _USB_DEVICE_DESCR {
     UINT8 bLength;
     UINT8 bDescriptorType;
     UINT16 bcdUSB;
@@ -548,7 +548,7 @@ __PACKED typedef struct _USB_DEVICE_DESCR {
 } USB_DEV_DESCR, *PUSB_DEV_DESCR;
 
 
-__PACKED typedef struct _USB_CONFIG_DESCR {
+typedef struct __PACKED _USB_CONFIG_DESCR {
     UINT8 bLength;
     UINT8 bDescriptorType;
     UINT16 wTotalLength;
@@ -560,7 +560,7 @@ __PACKED typedef struct _USB_CONFIG_DESCR {
 } USB_CFG_DESCR, *PUSB_CFG_DESCR;
 
 
-__PACKED typedef struct _USB_INTERF_DESCR {
+typedef struct __PACKED _USB_INTERF_DESCR {
     UINT8 bLength;
     UINT8 bDescriptorType;
     UINT8 bInterfaceNumber;
@@ -573,7 +573,7 @@ __PACKED typedef struct _USB_INTERF_DESCR {
 } USB_ITF_DESCR, *PUSB_ITF_DESCR;
 
 
-__PACKED typedef struct _USB_ENDPOINT_DESCR {
+typedef struct __PACKED _USB_ENDPOINT_DESCR {
     UINT8 bLength;
     UINT8 bDescriptorType;
     UINT8 bEndpointAddress;
@@ -583,14 +583,14 @@ __PACKED typedef struct _USB_ENDPOINT_DESCR {
 } USB_ENDP_DESCR, *PUSB_ENDP_DESCR;
 
 
-__PACKED typedef struct _USB_CONFIG_DESCR_LONG {
+typedef struct __PACKED _USB_CONFIG_DESCR_LONG {
     USB_CFG_DESCR   cfg_descr;
     USB_ITF_DESCR   itf_descr;
     USB_ENDP_DESCR  endp_descr[1];
 } USB_CFG_DESCR_LONG, *PUSB_CFG_DESCR_LONG;
 
 
-__PACKED typedef struct _USB_HUB_DESCR {
+typedef struct __PACKED _USB_HUB_DESCR {
     UINT8 bDescLength;
     UINT8 bDescriptorType;
     UINT8 bNbrPorts;
@@ -603,7 +603,7 @@ __PACKED typedef struct _USB_HUB_DESCR {
 } USB_HUB_DESCR, *PUSB_HUB_DESCR;
 
 
-__PACKED typedef struct _USB_HID_DESCR {
+typedef struct __PACKED _USB_HID_DESCR {
     UINT8 bLength;
     UINT8 bDescriptorType;
     UINT16 bcdHID;
@@ -615,7 +615,7 @@ __PACKED typedef struct _USB_HID_DESCR {
 } USB_HID_DESCR, *PUSB_HID_DESCR;
 
 
-__PACKED typedef struct _UDISK_BOC_CBW {/* command of BulkOnly USB-FlashDisk */
+typedef struct __PACKED _UDISK_BOC_CBW {/* command of BulkOnly USB-FlashDisk */
     UINT32 mCBW_Sig;
     UINT32 mCBW_Tag;
     UINT32 mCBW_DataLen;                /* uppest byte of data length, always is 0 */
@@ -626,7 +626,7 @@ __PACKED typedef struct _UDISK_BOC_CBW {/* command of BulkOnly USB-FlashDisk */
 } UDISK_BOC_CBW, *PXUDISK_BOC_CBW;
 
 
-__PACKED typedef struct _UDISK_BOC_CSW {/* status of BulkOnly USB-FlashDisk */
+typedef struct __PACKED _UDISK_BOC_CSW {/* status of BulkOnly USB-FlashDisk */
     UINT32 mCBW_Sig;
     UINT32 mCBW_Tag;
     UINT32 mCSW_Residue;                /* return: remainder bytes */         /* uppest byte of remainder length, always is 0 */

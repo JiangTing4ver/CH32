@@ -1,4 +1,5 @@
 #include "gy520.h"
+#include "delay.h"
 
 // 陀螺仪和加速度计量程参数
 static float gyro_scale = 131.0f;  // 默认±250°/s，131 LSB/(°/s)
@@ -129,4 +130,28 @@ u8 GY520_SetAccelRange(u8 range)
     }
     
     return 0;
+}
+
+// 全局变量存储GY520数据
+static GY520_Data_t g_gy520Data;
+
+// GY520数据更新函数
+void GY520_Update(void)
+{
+    // 获取缩放后的数据
+    GY520_GetScaledData(&g_gy520Data);
+    
+    // 这里可以添加数据处理逻辑，例如：
+    // - 数据过滤
+    // - 姿态解算
+    // - 阈值检测
+    // - 数据上传
+    
+    // 示例：简单的数据输出（如果有UART的话）
+    // printf("Accel: X=%.2f g, Y=%.2f g, Z=%.2f g\n", g_gy520Data.accelX_g, g_gy520Data.accelY_g, g_gy520Data.accelZ_g);
+    // printf("Gyro: X=%.2f dps, Y=%.2f dps, Z=%.2f dps\n", g_gy520Data.gyroX_dps, g_gy520Data.gyroY_dps, g_gy520Data.gyroZ_dps);
+    // printf("Temp: %.2f °C\n", g_gy520Data.temp_C);
+    
+    // 添加适当的延时
+    Delay_Ms(100);
 }
