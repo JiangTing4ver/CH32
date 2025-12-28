@@ -22,10 +22,13 @@ typedef struct {
 
 // Public API functions
 void WS2812_SendColor(WS2812_Color color);
+void WS2812_SendByte(uint8_t byte);
 void WS2812_Show(void);
 void WS2812_SetLED(uint16_t ledIndex, uint8_t red, uint8_t green, uint8_t blue);
+void WS2812_SetLEDColor(uint16_t ledIndex, WS2812_Color color);
 void WS2812_Fill(WS2812_Color color);
 WS2812_Color WS2812_CreateColor(uint8_t red, uint8_t green, uint8_t blue);
 void WS2812_Clear(void);
+void WS2812_WaterFlowEffect(WS2812_Color color, uint16_t speedMs);
 
 #endif // __WS2812_H__

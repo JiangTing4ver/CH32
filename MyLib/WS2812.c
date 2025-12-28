@@ -7,7 +7,12 @@
 // Number of WS2812 LEDs in the strip
 #define WS2812_NUM_LEDS 8 
 
-static WS2812_Color ws2812_led_buffer[WS2812_NUM_LEDS];
+// WS2812 timing values (based on 8MHz clock, 90 counts = 1.25us period)
+#define WS2812_ONE_HIGH 60   // 0.8us high for 1 bit
+#define WS2812_ZERO_HIGH 30  // 0.4us high for 0 bit
+
+// LED buffer
+static WS2812_Color WS2812_ColorBuf[WS2812_NUM_LEDS];
 
 void TIM1_CH1_Init(uint16_t psc, uint16_t arr, uint16_t ccr)
 {
@@ -58,7 +63,7 @@ void WS2812_Pin_init()
 
 void WS2812_Init(void)
 {
-    TIM1_CH1_Init(1, 90, 60); 
+    TIM1_CH1_Init(1, 90, 0); 
     WS2812_Pin_init();
 }
 
@@ -72,38 +77,39 @@ void send_0(void)
     TIM_SetCompare1(TIM1, 30);
 }
 
-
-
-// Send a single color (24 bits, GRB format)
-void WS2812_SendColor(WS2812_Color color)
+void WS2812_SendByte(uint8_t byte)
 {
     uint8_t i;
-    
-    // Send Green component (MSB first)
-    for(i = 0; i < 8; i++) {
-        if(color.g & (1 << (7 - i))) {
+    for (i = 0; i < 8; i++)
+    {
+        if (byte & 0x80)  // 检查当前最高位
+        {
             send_1();
-        } else {
+        }
+        else
+        {
             send_0();
         }
-       
+        byte <<= 1;  // 左移一位，处理下一个位
     }
-    
-    for(i = 0; i < 8; i++) {
-        if(color.r & (1 << (7 - i))) {
+}
+
+// Send a single byte to WS2812
+void WS2812_SendByte(uint8_t byte)
+{
+    uint8_t i;
+    // Send bits from MSB to LSB
+    for (i = 0; i < 8; i++)
+    {
+        if (byte & 0x80)  // Check MSB
+        {
             send_1();
-        } else {
+        }
+        else
+        {
             send_0();
         }
-    }
-    
-    // Send Blue component (MSB first)
-    for(i = 0; i < 8; i++) {
-        if(color.b & (1 << (7 - i))) {
-            send_1();
-        } else {
-            send_0();
-        }
+        byte <<= 1;  // Shift to next bit
     }
 }
 
@@ -113,25 +119,28 @@ void WS2812_Show(void)
     uint16_t i;
     
     // Send color data for all LEDs in the buffer
-    for(i = 0; i < WS2812_NUM_LEDS; i++) {
-        WS2812_SendColor(ws2812_led_buffer[i]);
+    for(i = 0; i < WS2812_NUM_LEDS; i++) 
+    {
+        WS2812_SendByte(WS2812_ColorBuf[i].g);
+        WS2812_SendByte(WS2812_ColorBuf[i].r);
+        WS2812_SendByte(WS2812_ColorBuf[i].b);
     }
     
     // Set PWM to 0% duty cycle for the latch signal
     TIM_SetCompare1(TIM1, 0);
     
-    // Latch time: >50us (required by WS2812 protocol)
     Delay_Us(100);
 }
 
 void WS2812_SetLED(uint16_t ledIndex, uint8_t red, uint8_t green, uint8_t blue)
 {
     // Check if the LED index is valid
-    if (ledIndex < WS2812_NUM_LEDS) {
+    if (ledIndex < WS2812_NUM_LEDS) 
+    {
         // Store the color in the buffer (GRB format)
-        ws2812_led_buffer[ledIndex].g = green;
-        ws2812_led_buffer[ledIndex].r = red;
-        ws2812_led_buffer[ledIndex].b = blue;
+        WS2812_ColorBuf[ledIndex].g = green;
+        WS2812_ColorBuf[ledIndex].r = red;
+        WS2812_ColorBuf[ledIndex].b = blue;
     }
 }
 
@@ -144,18 +153,26 @@ WS2812_Color WS2812_CreateColor(uint8_t red, uint8_t green, uint8_t blue)
     return color;
 }
 
+
+void WS2812_SendColor(WS2812_Color color)
+{
+    WS2812_SendByte(color.g);
+    WS2812_SendByte(color.r);
+    WS2812_SendByte(color.b);
+}
+
 // Clear all LEDs
 void WS2812_Clear(void)
 {
     // Set all LEDs in the buffer to black (off)
     uint16_t i;
-    for(i = 0; i < WS2812_NUM_LEDS; i++) {
-        ws2812_led_buffer[i].g = 0;
-        ws2812_led_buffer[i].r = 0;
-        ws2812_led_buffer[i].b = 0;
+    for(i = 0; i < WS2812_NUM_LEDS; i++) 
+    {
+        WS2812_ColorBuf[i].g = 0;
+        WS2812_ColorBuf[i].r = 0;
+        WS2812_ColorBuf[i].b = 0;
     }
     
-    // Update the LEDs to turn them off
     WS2812_Show();
 }
 
@@ -164,11 +181,78 @@ void WS2812_Fill(WS2812_Color color)
 {
     // Fill the buffer with the same color for all LEDs
     uint16_t i;
-    for(i = 0; i < WS2812_NUM_LEDS; i++) {
-        ws2812_led_buffer[i] = color;
+    for(i = 0; i < WS2812_NUM_LEDS; i++) 
+    {
+        WS2812_ColorBuf[i] = color;
     }
     
     // Update all LEDs with the new color data
     WS2812_Show();
 }
 
+void WS2812_SetLEDColor(uint16_t ledIndex, WS2812_Color color)
+{
+    // Check if the LED index is valid
+    if (ledIndex < WS2812_NUM_LEDS) 
+    {
+        // Store the color in the buffer (GRB format)
+        WS2812_ColorBuf[ledIndex] = color;
+    }
+}
+
+// Water flow effect with specified color
+void WS2812_WaterFlowEffect(WS2812_Color color, uint16_t speedMs)
+{
+    uint16_t i, j;
+    
+    // Clear all LEDs initially
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+    Delay_Ms(500);
+    
+    // Create flowing water effect
+    for (i = 0; i < WS2812_NUM_LEDS + 3; i++)
+    {
+        // Clear buffer
+        for (j = 0; j < WS2812_NUM_LEDS; j++)
+        {
+            WS2812_ColorBuf[j].r = 0;
+            WS2812_ColorBuf[j].g = 0;
+            WS2812_ColorBuf[j].b = 0;
+        }
+        
+        // Set current LED and trailing LEDs with decreasing brightness
+        if (i < WS2812_NUM_LEDS)
+        {
+            WS2812_SetLEDColor(i, color);
+        }
+        
+        if (i - 1 >= 0 && i - 1 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color halfColor;
+            halfColor.r = color.r / 2;
+            halfColor.g = color.g / 2;
+            halfColor.b = color.b / 2;
+            WS2812_SetLEDColor(i - 1, halfColor);
+        }
+        
+        if (i - 2 >= 0 && i - 2 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color quarterColor;
+            quarterColor.r = color.r / 4;
+            quarterColor.g = color.g / 4;
+            quarterColor.b = color.b / 4;
+            WS2812_SetLEDColor(i - 2, quarterColor);
+        }
+        
+        // Update LEDs
+        WS2812_Show();
+        
+        // Control speed
+        Delay_Ms(speedMs);
+    }
+    
+    // Clear all LEDs when done
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+}
