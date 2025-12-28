@@ -4,7 +4,7 @@
 #define GPIO_Port_GPIO GPIOA
 #define GPIO_Pin_GPIO GPIO_Pin_8
 
-// Number of WS2812 LEDs in the strip
+// WS2812灯带中的LED数量
 #define WS2812_NUM_LEDS 8 
 
 
@@ -181,15 +181,15 @@ void WS2812_WaterFlowEffect(WS2812_Color color, uint16_t speedMs)
 {
     uint16_t i, j;
     
-    // Clear all LEDs initially
+    // 初始时清空所有LED
     WS2812_Fill(WS2812_CreateColor(0, 0, 0));
     WS2812_Show();
     Delay_Ms(500);
     
-    // Create flowing water effect
+    // 创建流水灯效果
     for (i = 0; i < WS2812_NUM_LEDS + 3; i++)
     {
-        // Clear buffer
+        // 清空缓冲区
         for (j = 0; j < WS2812_NUM_LEDS; j++)
         {
             WS2812_ColorBuf[j].r = 0;
@@ -197,7 +197,7 @@ void WS2812_WaterFlowEffect(WS2812_Color color, uint16_t speedMs)
             WS2812_ColorBuf[j].b = 0;
         }
         
-        // Set current LED and trailing LEDs with decreasing brightness
+        // 设置当前LED和尾随LED，亮度逐渐降低
         if (i < WS2812_NUM_LEDS)
         {
             WS2812_SetLEDColor(i, color);
@@ -221,14 +221,371 @@ void WS2812_WaterFlowEffect(WS2812_Color color, uint16_t speedMs)
             WS2812_SetLEDColor(i - 2, quarterColor);
         }
         
-        // Update LEDs
+        // 更新LED显示
         WS2812_Show();
         
-        // Control speed
+        // 控制速度
         Delay_Ms(speedMs);
     }
     
-    // Clear all LEDs when done
+    // 结束时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+}
+
+// 双向流水灯效果 - 两束水流向相反方向流动
+void WS2812_DoubleWaterFlowEffect(WS2812_Color color, uint16_t speedMs)
+{
+    uint16_t i, j;
+    
+    // 初始时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+    Delay_Ms(500);
+    
+    // 创建双向流水灯效果
+    for (i = 0; i < WS2812_NUM_LEDS + 3; i++)
+    {
+        // 清空缓冲区
+        for (j = 0; j < WS2812_NUM_LEDS; j++)
+        {
+            WS2812_ColorBuf[j].r = 0;
+            WS2812_ColorBuf[j].g = 0;
+            WS2812_ColorBuf[j].b = 0;
+        }
+        
+        // 正向流动（从左到右）
+        if (i < WS2812_NUM_LEDS)
+        {
+            WS2812_SetLEDColor(i, color);
+        }
+        if (i - 1 >= 0 && i - 1 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color halfColor;
+            halfColor.r = color.r / 2;
+            halfColor.g = color.g / 2;
+            halfColor.b = color.b / 2;
+            WS2812_SetLEDColor(i - 1, halfColor);
+        }
+        
+        // 反向流动（从右到左）
+        uint16_t reverseIndex = WS2812_NUM_LEDS - 1 - i;
+        if (reverseIndex >= 0 && reverseIndex < WS2812_NUM_LEDS)
+        {
+            WS2812_SetLEDColor(reverseIndex, color);
+        }
+        if (reverseIndex + 1 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color halfColor;
+            halfColor.r = color.r / 2;
+            halfColor.g = color.g / 2;
+            halfColor.b = color.b / 2;
+            WS2812_SetLEDColor(reverseIndex + 1, halfColor);
+        }
+        
+        // 更新LED显示
+        WS2812_Show();
+        
+        // 控制速度
+        Delay_Ms(speedMs);
+    }
+    
+    // 结束时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+}
+
+// 彩虹流水灯效果，颜色随位置变化
+void WS2812_RainbowWaterFlowEffect(uint16_t speedMs)
+{
+    uint16_t i, j;
+    uint8_t hue = 0;
+    
+    // 初始时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+    Delay_Ms(500);
+    
+    // 创建彩虹流水灯效果
+    for (i = 0; i < WS2812_NUM_LEDS * 2; i++)
+    {
+        // 清空缓冲区
+        for (j = 0; j < WS2812_NUM_LEDS; j++)
+        {
+            WS2812_ColorBuf[j].r = 0;
+            WS2812_ColorBuf[j].g = 0;
+            WS2812_ColorBuf[j].b = 0;
+        }
+        
+        // 计算当前位置的彩虹颜色
+        uint8_t currentHue = (hue + i * 10) % 360;
+        WS2812_Color rainbowColor;
+        
+        // 将HSV颜色转换为RGB
+        if (currentHue < 60)
+        {
+            rainbowColor.r = 255;
+            rainbowColor.g = (currentHue * 255) / 60;
+            rainbowColor.b = 0;
+        }
+        else if (currentHue < 120)
+        {
+            rainbowColor.r = (255 - ((currentHue - 60) * 255) / 60);
+            rainbowColor.g = 255;
+            rainbowColor.b = 0;
+        }
+        else if (currentHue < 180)
+        {
+            rainbowColor.r = 0;
+            rainbowColor.g = 255;
+            rainbowColor.b = ((currentHue - 120) * 255) / 60;
+        }
+        else if (currentHue < 240)
+        {
+            rainbowColor.r = 0;
+            rainbowColor.g = (255 - ((currentHue - 180) * 255) / 60);
+            rainbowColor.b = 255;
+        }
+        else if (currentHue < 300)
+        {
+            rainbowColor.r = ((currentHue - 240) * 255) / 60;
+            rainbowColor.g = 0;
+            rainbowColor.b = 255;
+        }
+        else
+        {
+            rainbowColor.r = 255;
+            rainbowColor.g = 0;
+            rainbowColor.b = (255 - ((currentHue - 300) * 255) / 60);
+        }
+        
+        // 设置当前LED和尾随LED，亮度逐渐降低
+        uint16_t ledPos = i % (WS2812_NUM_LEDS + 3);
+        if (ledPos < WS2812_NUM_LEDS)
+        {
+            WS2812_SetLEDColor(ledPos, rainbowColor);
+        }
+        if (ledPos - 1 >= 0 && ledPos - 1 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color halfColor;
+            halfColor.r = rainbowColor.r / 2;
+            halfColor.g = rainbowColor.g / 2;
+            halfColor.b = rainbowColor.b / 2;
+            WS2812_SetLEDColor(ledPos - 1, halfColor);
+        }
+        if (ledPos - 2 >= 0 && ledPos - 2 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color quarterColor;
+            quarterColor.r = rainbowColor.r / 4;
+            quarterColor.g = rainbowColor.g / 4;
+            quarterColor.b = rainbowColor.b / 4;
+            WS2812_SetLEDColor(ledPos - 2, quarterColor);
+        }
+        
+        // 更新LED显示
+        WS2812_Show();
+        
+        // 控制速度
+        Delay_Ms(speedMs);
+    }
+    
+    // 结束时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+}
+
+// 呼吸流水灯效果，亮度呈脉冲变化
+void WS2812_BreathingWaterFlowEffect(WS2812_Color color, uint16_t speedMs)
+{
+    uint16_t i, j;
+    uint8_t breathPhase = 0;
+    
+    // 初始时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+    Delay_Ms(500);
+    
+    // 创建呼吸流水灯效果
+    for (i = 0; i < WS2812_NUM_LEDS + 10; i++)
+    {
+        // 清空缓冲区
+        for (j = 0; j < WS2812_NUM_LEDS; j++)
+        {
+            WS2812_ColorBuf[j].r = 0;
+            WS2812_ColorBuf[j].g = 0;
+            WS2812_ColorBuf[j].b = 0;
+        }
+        
+        // 计算呼吸亮度（类似正弦波）
+        uint8_t brightness;
+        if (breathPhase < 128)
+        {
+            brightness = (breathPhase * 2);
+        }
+        else
+        {
+            brightness = 255 - ((breathPhase - 128) * 2);
+        }
+        breathPhase = (breathPhase + 5) % 256;
+        
+        // 将亮度应用到颜色
+        WS2812_Color breathingColor;
+        breathingColor.r = (color.r * brightness) / 255;
+        breathingColor.g = (color.g * brightness) / 255;
+        breathingColor.b = (color.b * brightness) / 255;
+        
+        // 设置当前LED和尾随LED，亮度逐渐降低
+        if (i < WS2812_NUM_LEDS)
+        {
+            WS2812_SetLEDColor(i, breathingColor);
+        }
+        if (i - 1 >= 0 && i - 1 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color halfColor;
+            halfColor.r = breathingColor.r / 2;
+            halfColor.g = breathingColor.g / 2;
+            halfColor.b = breathingColor.b / 2;
+            WS2812_SetLEDColor(i - 1, halfColor);
+        }
+        if (i - 2 >= 0 && i - 2 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color quarterColor;
+            quarterColor.r = breathingColor.r / 4;
+            quarterColor.g = breathingColor.g / 4;
+            quarterColor.b = breathingColor.b / 4;
+            WS2812_SetLEDColor(i - 2, quarterColor);
+        }
+        
+        // 更新LED显示
+        WS2812_Show();
+        
+        // 控制速度
+        Delay_Ms(speedMs);
+    }
+    
+    // 结束时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+}
+
+void Run_FlowRGB(uint16_t speedMs)
+{
+    // 循环显示不同颜色的流水灯效果
+    WS2812_WaterFlowEffect(WS2812_CreateColor(255, 0, 0), speedMs); // 红色流水灯
+    WS2812_WaterFlowEffect(WS2812_CreateColor(0, 255, 0), speedMs); // 绿色流水灯
+    WS2812_WaterFlowEffect(WS2812_CreateColor(0, 0, 255), speedMs); // 蓝色流水灯
+    WS2812_WaterFlowEffect(WS2812_CreateColor(255, 255, 0), speedMs); // 黄色流水灯
+    WS2812_WaterFlowEffect(WS2812_CreateColor(255, 0, 255), speedMs); // 紫色流水灯
+    WS2812_WaterFlowEffect(WS2812_CreateColor(0, 255, 255), speedMs); // 青色流水灯
+    WS2812_WaterFlowEffect(WS2812_CreateColor(255, 255, 255), speedMs); // 白色流水灯
+}
+
+// 追逐效果 - 两种颜色相互追逐
+void WS2812_ChaseEffect(WS2812_Color color1, WS2812_Color color2, uint16_t speedMs)
+{
+    uint16_t i, j;
+    
+    // 初始时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+    Delay_Ms(500);
+    
+    // 创建追逐效果
+    for (i = 0; i < WS2812_NUM_LEDS * 2; i++)
+    {
+        // 清空缓冲区
+        for (j = 0; j < WS2812_NUM_LEDS; j++)
+        {
+            WS2812_ColorBuf[j].r = 0;
+            WS2812_ColorBuf[j].g = 0;
+            WS2812_ColorBuf[j].b = 0;
+        }
+        
+        // 设置两种颜色的LED相互追逐
+        for (j = 0; j < WS2812_NUM_LEDS; j++)
+        {
+            if ((j + i) % 2 == 0)
+            {
+                WS2812_SetLEDColor(j, color1);
+            }
+            else
+            {
+                WS2812_SetLEDColor(j, color2);
+            }
+        }
+        
+        // 更新LED显示
+        WS2812_Show();
+        
+        // 控制速度
+        Delay_Ms(speedMs);
+    }
+    
+    // 结束时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+}
+
+// 弹跳效果 - LED来回弹跳
+void WS2812_BounceEffect(WS2812_Color color, uint16_t speedMs)
+{
+    uint16_t i, j;
+    int8_t direction = 1;
+    uint16_t position = 0;
+    
+    // 初始时清空所有LED
+    WS2812_Fill(WS2812_CreateColor(0, 0, 0));
+    WS2812_Show();
+    Delay_Ms(500);
+    
+    // 创建多轮弹跳效果
+    for (i = 0; i < WS2812_NUM_LEDS * 4; i++)
+    {
+        // 清空缓冲区
+        for (j = 0; j < WS2812_NUM_LEDS; j++)
+        {
+            WS2812_ColorBuf[j].r = 0;
+            WS2812_ColorBuf[j].g = 0;
+            WS2812_ColorBuf[j].b = 0;
+        }
+        
+        // 设置当前位置和拖尾效果
+        if (position < WS2812_NUM_LEDS)
+        {
+            WS2812_SetLEDColor(position, color);
+        }
+        if (position - 1 >= 0 && position - 1 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color halfColor;
+            halfColor.r = color.r / 2;
+            halfColor.g = color.g / 2;
+            halfColor.b = color.b / 2;
+            WS2812_SetLEDColor(position - 1, halfColor);
+        }
+        if (position - 2 >= 0 && position - 2 < WS2812_NUM_LEDS)
+        {
+            WS2812_Color quarterColor;
+            quarterColor.r = color.r / 4;
+            quarterColor.g = color.g / 4;
+            quarterColor.b = color.b / 4;
+            WS2812_SetLEDColor(position - 2, quarterColor);
+        }
+        
+        // 更新LED显示
+        WS2812_Show();
+        
+        // 移动位置并在需要时改变方向
+        position += direction;
+        if (position >= WS2812_NUM_LEDS - 1 || position <= 0)
+        {
+            direction *= -1;
+        }
+        
+        // 控制速度
+        Delay_Ms(speedMs);
+    }
+    
+    // 结束时清空所有LED
     WS2812_Fill(WS2812_CreateColor(0, 0, 0));
     WS2812_Show();
 }
