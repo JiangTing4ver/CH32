@@ -69,36 +69,22 @@ void WS2812_Init(void)
 
 void send_1(void)
 {
-    TIM_SetCompare1(TIM1, 60);
+    TIM_SetCompare1(TIM1, 60);  // Set 0.8us high
+    Delay_Us(1);                // Wait for the bit period
+    TIM_SetCompare1(TIM1, 0);   // Ensure low level
 }
 
 void send_0(void)
 {
-    TIM_SetCompare1(TIM1, 30);
+    TIM_SetCompare1(TIM1, 30);  // Set 0.4us high
+    Delay_Us(1);                // Wait for the bit period
+    TIM_SetCompare1(TIM1, 0);   // Ensure low level
 }
 
+// Send a single byte to WS2812 (MSB first)
 void WS2812_SendByte(uint8_t byte)
 {
     uint8_t i;
-    for (i = 0; i < 8; i++)
-    {
-        if (byte & 0x80)  // 检查当前最高位
-        {
-            send_1();
-        }
-        else
-        {
-            send_0();
-        }
-        byte <<= 1;  // 左移一位，处理下一个位
-    }
-}
-
-// Send a single byte to WS2812
-void WS2812_SendByte(uint8_t byte)
-{
-    uint8_t i;
-    // Send bits from MSB to LSB
     for (i = 0; i < 8; i++)
     {
         if (byte & 0x80)  // Check MSB
