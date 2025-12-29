@@ -1,24 +1,14 @@
 #include "WS2812.h"
 
-// PA8
-#define GPIO_Port_GPIO GPIOA
-#define GPIO_Pin_GPIO GPIO_Pin_8
 
-// WS2812灯带中的LED数量
-#define WS2812_NUM_LEDS 8 
-
-
-#define WS2812_ONE_HIGH 60   
-#define WS2812_ZERO_HIGH 30 
-#define WS2812_TIM_ARR 90 
 
 
 
 // 全局缓冲区
-static WS2812_Color WS2812_ColorBuf[WS2812_NUM_LEDS] = {0};
-static uint16_t WS2812_DmaBuf[WS2812_NUM_LEDS * 24] = {0};  // DMA缓冲区（8*24=192bit）
+WS2812_Color WS2812_ColorBuf[WS2812_NUM_LEDS] = {0};
+uint16_t WS2812_DmaBuf[WS2812_NUM_LEDS * 24] = {0};  // DMA缓冲区（8*24=192bit）
 
-static void TIM1_CH1_DMA_Init(void)
+void TIM1_CH1_DMA_Init(uint16_t psc, uint16_t arr)
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     TIM_OCInitTypeDef TIM_OCInitStructure;
@@ -33,9 +23,9 @@ static void TIM1_CH1_DMA_Init(void)
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_GPIO;
     GPIO_Init(GPIO_Port_GPIO, &GPIO_InitStruct);
 
-    TIM_TimeBaseStructure.TIM_Prescaler = 1 - 1;           
+    TIM_TimeBaseStructure.TIM_Prescaler = psc - 1;           
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseStructure.TIM_Period = WS2812_TIM_ARR - 1;  // 保留你的90周期
+    TIM_TimeBaseStructure.TIM_Period = arr - 1;  
     TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
     TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
     TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
@@ -71,14 +61,14 @@ static void TIM1_CH1_DMA_Init(void)
     TIM_DMACmd(TIM1, TIM_DMA_CC1, ENABLE);
 }
 
-static void WS2812_ConvertToDmaBuf(void)
+void WS2812_ConvertToDmaBuf(void)
 {
     uint16_t bitIdx = 0;
     uint8_t colorByte, bit;
 
     for (uint16_t led = 0; led < WS2812_NUM_LEDS; led++)
     {
-        // GRB顺序（保留你的逻辑），每个比特对应你的30/60
+        // GRB顺序
         colorByte = WS2812_ColorBuf[led].g;
         for (bit = 0; bit < 8; bit++)
         {
@@ -104,7 +94,7 @@ static void WS2812_ConvertToDmaBuf(void)
 
 void WS2812_Init(void)
 {
-    TIM1_CH1_DMA_Init();  
+    TIM1_CH1_DMA_Init(1,90);  
     WS2812_Clear();
 }
 

@@ -5,7 +5,16 @@
 #include "ch32f10x_rcc.h"
 #include "ch32f10x_tim.h"
 
-void TIM1_CH1_Init(uint16_t psc, uint16_t arr, uint16_t ccr);
+// PA8
+#define GPIO_Port_GPIO GPIOA
+#define GPIO_Pin_GPIO GPIO_Pin_8
+
+// WS2812灯带中的LED数量
+#define WS2812_NUM_LEDS 8 
+#define WS2812_ONE_HIGH 60   
+#define WS2812_ZERO_HIGH 30 
+
+void TIM1_CH1_DMA_Init(uint16_t psc, uint16_t arr);
 void WS2812_Pin_init();
 void WS2812_Init(void);
 
