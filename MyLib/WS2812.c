@@ -1,12 +1,20 @@
 #include "WS2812.h"
 
-
-
-
+// 亮度值（0-100，对应0%-100%亮度）
+uint16_t brightness = 100;
 
 // 全局缓冲区
 WS2812_Color WS2812_ColorBuf[WS2812_NUM_LEDS] = {0};
 uint16_t WS2812_DmaBuf[WS2812_NUM_LEDS * 24] = {0};  // DMA缓冲区（8*24=192bit）
+
+
+static uint8_t WS2812_ScaleBrightness(uint8_t colorValue)
+{
+    // 0-100
+    uint16_t safeBrightness = (brightness > 100) ? 100 : (brightness < 0) ? 0 : brightness;
+    
+    return (uint8_t)((colorValue * safeBrightness + 50) / 100);
+}
 
 void TIM1_CH1_DMA_Init(uint16_t psc, uint16_t arr)
 {
@@ -65,25 +73,30 @@ void WS2812_ConvertToDmaBuf(void)
 {
     uint16_t bitIdx = 0;
     uint8_t colorByte, bit;
+    uint8_t scaledR, scaledG, scaledB;
 
     for (uint16_t led = 0; led < WS2812_NUM_LEDS; led++)
     {
+        scaledG = WS2812_ScaleBrightness(WS2812_ColorBuf[led].g);
+        scaledR = WS2812_ScaleBrightness(WS2812_ColorBuf[led].r);
+        scaledB = WS2812_ScaleBrightness(WS2812_ColorBuf[led].b);
+
         // GRB顺序
-        colorByte = WS2812_ColorBuf[led].g;
+        colorByte = scaledG;
         for (bit = 0; bit < 8; bit++)
         {
             WS2812_DmaBuf[bitIdx++] = (colorByte & 0x80) ? WS2812_ONE_HIGH : WS2812_ZERO_HIGH;
             colorByte <<= 1;
         }
 
-        colorByte = WS2812_ColorBuf[led].r;
+        colorByte = scaledR;
         for (bit = 0; bit < 8; bit++)
         {
             WS2812_DmaBuf[bitIdx++] = (colorByte & 0x80) ? WS2812_ONE_HIGH : WS2812_ZERO_HIGH;
             colorByte <<= 1;
         }
 
-        colorByte = WS2812_ColorBuf[led].b;
+        colorByte = scaledB;
         for (bit = 0; bit < 8; bit++)
         {
             WS2812_DmaBuf[bitIdx++] = (colorByte & 0x80) ? WS2812_ONE_HIGH : WS2812_ZERO_HIGH;
@@ -107,7 +120,6 @@ void WS2812_Show(void)
     DMA_Cmd(DMA1_Channel2, ENABLE);
 
     TIM_Cmd(TIM1, ENABLE);
-
 
     while (DMA_GetFlagStatus(DMA1_FLAG_TC2) == RESET);
     DMA_ClearFlag(DMA1_FLAG_TC2);
@@ -136,6 +148,18 @@ WS2812_Color WS2812_CreateColor(uint8_t red, uint8_t green, uint8_t blue)
     return color;
 }
 
+// 设置全局亮度（0-100）
+void WS2812_SetBrightness(uint16_t newBrightness)
+{
+    brightness = (newBrightness > 100) ? 100 : (newBrightness < 0) ? 0 : newBrightness;
+}
+
+uint16_t WS2812_GetBrightness(void)
+{
+    return brightness;
+}
+
+// -----------------------------------------------------------
 void WS2812_Clear(void)
 {
     uint16_t i;
@@ -578,4 +602,50 @@ void WS2812_BounceEffect(WS2812_Color color, uint16_t speedMs)
     // 结束时清空所有LED
     WS2812_Fill(WS2812_CreateColor(0, 0, 0));
     WS2812_Show();
+}
+
+/*
+ * @brief 呼吸灯效果（极简版）
+ * @param ledIndex 要控制的LED索引，0到WS2812_NUM_LEDS-1为单个LED，WS2812_NUM_LEDS为所有LED
+ * @param r 红色分量（0-255）
+ * @param g 绿色分量（0-255）
+ * @param b 蓝色分量（0-255）
+ * @param delayMs 每次亮度变化的延时（毫秒，建议10-50，值越小呼吸越快）
+ * @note 1. 亮度变化步长固定为1（保证呼吸流畅）
+ *       2. 函数会无限循环执行呼吸效果（0→100→0亮度循环）
+ *       3. 控制单个/所有LED，颜色固定，仅亮度循环变化
+ */
+void WS2812_BreathingLight(uint16_t ledIndex, uint8_t r, uint8_t g, uint8_t b, uint16_t delayMs)
+{
+    if (delayMs == 0) delayMs = 1;
+
+    if (ledIndex < WS2812_NUM_LEDS)
+    {
+        // 控制单个灯珠
+        WS2812_SetLED(ledIndex, r, g, b);
+    }
+    else if (ledIndex == WS2812_NUM_LEDS)
+    {
+        // 控制所有灯珠
+        WS2812_Fill(WS2812_CreateColor(r, g, b));
+    }
+    else
+    {
+        return;
+    }
+
+    // 渐亮阶段：亮度从0增加到100
+    for (brightness = 0; brightness <= 100; brightness++)
+    {
+        WS2812_Show();  // 刷新当前亮度
+        Delay_Ms(delayMs);
+    }
+
+    // 渐暗阶段：亮度从100降低到0
+    for (brightness = 100; brightness >= 0; brightness--)
+    {
+        WS2812_Show();  // 刷新当前亮度
+        Delay_Ms(delayMs);
+    }
+    WS2812_Clear();
 }

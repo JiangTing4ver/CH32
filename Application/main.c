@@ -53,7 +53,8 @@ int main(void)
         #elif flag == MyUSART1
             RX_Process();
         #elif flag == WS2812
-            WS2812_RainbowWaterFlowEffect(200);
+            // WS2812_RainbowWaterFlowEffect(200);
+            WS2812_BreathingLight(8, 0, 0, 255, 1000);
         #endif  
     }
 }

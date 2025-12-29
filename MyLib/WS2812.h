@@ -14,6 +14,7 @@
 #define WS2812_ONE_HIGH 60   
 #define WS2812_ZERO_HIGH 30 
 
+
 void TIM1_CH1_DMA_Init(uint16_t psc, uint16_t arr);
 void WS2812_Pin_init();
 void WS2812_Init(void);
@@ -40,11 +41,16 @@ WS2812_Color WS2812_CreateColor(uint8_t red, uint8_t green, uint8_t blue);
 void WS2812_Clear(void);
 void WS2812_WaterFlowEffect(WS2812_Color color, uint16_t speedMs);
 void Run_FlowRGB(uint16_t speedMs);
+void WS2812_SetBrightness(uint16_t newBrightness);
+uint16_t WS2812_GetBrightness(void);
+
 // 其他高级效果
 void WS2812_DoubleWaterFlowEffect(WS2812_Color color, uint16_t speedMs);
 void WS2812_RainbowWaterFlowEffect(uint16_t speedMs);
 void WS2812_BreathingWaterFlowEffect(WS2812_Color color, uint16_t speedMs);
 void WS2812_ChaseEffect(WS2812_Color color1, WS2812_Color color2, uint16_t speedMs);
 void WS2812_BounceEffect(WS2812_Color color, uint16_t speedMs);
+void WS2812_BreathingLight(uint16_t ledIndex, uint8_t r, uint8_t g, uint8_t b, uint16_t delayMs);
+
 
 #endif // __WS2812_H__
