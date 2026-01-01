@@ -126,7 +126,7 @@ void WS2812_Show(void)
 
     TIM_Cmd(TIM1, DISABLE);
     TIM_SetCompare1(TIM1, 0);
-    Delay_Us(100);
+    Delay_Us(10);
 }
 
 void WS2812_SetLED(uint16_t ledIndex, uint8_t red, uint8_t green, uint8_t blue)
@@ -617,7 +617,10 @@ void WS2812_BounceEffect(WS2812_Color color, uint16_t speedMs)
  */
 void WS2812_BreathingLight(uint16_t ledIndex, uint8_t r, uint8_t g, uint8_t b, uint16_t delayMs)
 {
-    if (delayMs == 0) delayMs = 1;
+    if (delayMs == 0) 
+    {
+        delayMs = 1;
+    }
 
     if (ledIndex < WS2812_NUM_LEDS)
     {

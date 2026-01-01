@@ -54,7 +54,10 @@ int main(void)
             RX_Process();
         #elif flag == WS2812
             // WS2812_RainbowWaterFlowEffect(200);
-            WS2812_BreathingLight(8, 0, 0, 255, 1000);
+            WS2812_BreathingLight(8, 255, 0, 0, 50);
+            WS2812_BreathingLight(8, 0, 0, 255, 200);
+            WS2812_BreathingLight(8, 0, 255, 0, 100);
+            WS2812_BreathingLight(8, 0, 255, 255, 80);
         #endif  
     }
 }
