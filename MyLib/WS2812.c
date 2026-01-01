@@ -336,41 +336,40 @@ void WS2812_RainbowWaterFlowEffect(uint16_t speedMs)
         WS2812_Color rainbowColor;
         
         // 将HSV颜色转换为RGB
-        if (currentHue < 60)
+        uint8_t hueSegment = currentHue / 60;
+        switch (hueSegment)
         {
-            rainbowColor.r = 255;
-            rainbowColor.g = (currentHue * 255) / 60;
-            rainbowColor.b = 0;
-        }
-        else if (currentHue < 120)
-        {
-            rainbowColor.r = (255 - ((currentHue - 60) * 255) / 60);
-            rainbowColor.g = 255;
-            rainbowColor.b = 0;
-        }
-        else if (currentHue < 180)
-        {
-            rainbowColor.r = 0;
-            rainbowColor.g = 255;
-            rainbowColor.b = ((currentHue - 120) * 255) / 60;
-        }
-        else if (currentHue < 240)
-        {
-            rainbowColor.r = 0;
-            rainbowColor.g = (255 - ((currentHue - 180) * 255) / 60);
-            rainbowColor.b = 255;
-        }
-        else if (currentHue < 300)
-        {
-            rainbowColor.r = ((currentHue - 240) * 255) / 60;
-            rainbowColor.g = 0;
-            rainbowColor.b = 255;
-        }
-        else
-        {
-            rainbowColor.r = 255;
-            rainbowColor.g = 0;
-            rainbowColor.b = (255 - ((currentHue - 300) * 255) / 60);
+            case 0: // 0-59: 红色到黄色
+                rainbowColor.r = 255;
+                rainbowColor.g = (currentHue * 255) / 60;
+                rainbowColor.b = 0;
+                break;
+            case 1: // 60-119: 黄色到绿色
+                rainbowColor.r = (255 - ((currentHue - 60) * 255) / 60);
+                rainbowColor.g = 255;
+                rainbowColor.b = 0;
+                break;
+            case 2: // 120-179: 绿色到青色
+                rainbowColor.r = 0;
+                rainbowColor.g = 255;
+                rainbowColor.b = ((currentHue - 120) * 255) / 60;
+                break;
+            case 3: // 180-239: 青色到蓝色
+                rainbowColor.r = 0;
+                rainbowColor.g = (255 - ((currentHue - 180) * 255) / 60);
+                rainbowColor.b = 255;
+                break;
+            case 4: // 240-299: 蓝色到紫色
+                rainbowColor.r = ((currentHue - 240) * 255) / 60;
+                rainbowColor.g = 0;
+                rainbowColor.b = 255;
+                break;
+            case 5: // 300-359: 紫色到红色
+            default:
+                rainbowColor.r = 255;
+                rainbowColor.g = 0;
+                rainbowColor.b = (255 - ((currentHue - 300) * 255) / 60);
+                break;
         }
         
         // 设置当前LED和尾随LED，亮度逐渐降低
