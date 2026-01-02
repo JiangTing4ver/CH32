@@ -28,8 +28,8 @@ void TIM1_CH1_DMA_Init(uint16_t psc, uint16_t arr)
 
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStruct.GPIO_Pin = GPIO_Pin_GPIO;
-    GPIO_Init(GPIO_Port_GPIO, &GPIO_InitStruct);
+    GPIO_InitStruct.GPIO_Pin = RGB_RGB_GPIO_Pin_GPIO;
+    GPIO_Init(RGB_RGB_GPIO_Port_GPIO, &GPIO_InitStruct);
 
     TIM_TimeBaseStructure.TIM_Prescaler = psc - 1;           
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;

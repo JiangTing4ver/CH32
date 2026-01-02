@@ -6,8 +6,8 @@
 #include "ch32f10x_tim.h"
 
 // PA8
-#define GPIO_Port_GPIO GPIOA
-#define GPIO_Pin_GPIO GPIO_Pin_8
+#define RGB_RGB_GPIO_Port_GPIO GPIOA
+#define RGB_RGB_GPIO_Pin_GPIO GPIO_Pin_8
 
 // WS2812灯带中的LED数量
 #define WS2812_NUM_LEDS 8 
