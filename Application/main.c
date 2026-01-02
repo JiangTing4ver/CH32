@@ -2,9 +2,9 @@
 
 #define LED 0
 #define HM 1
-#define MyUSART1 3
-#define WS2812 4
-#define I2C 5
+#define MyUSART1 2
+#define WS2812 3
+#define I2C 4
 
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
