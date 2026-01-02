@@ -39,7 +39,8 @@ int main(void)
         // PA8_test();
     #elif flag == I2C
         LED_Init();
-        IIC_Init(I2C_SPEED, TxAddress);
+        // IIC_Init(I2C_SPEED, TxAddress);
+        I2C_Soft_Init();
     #endif
     
     while(1)
@@ -57,16 +58,32 @@ int main(void)
             WS2812_BreathingLight(8, 0, 255, 0, 100);
             WS2812_BreathingLight(8, 0, 255, 255, 80);
         #elif flag == I2C
-            // 循环5次发送数据，每次间隔1秒
+            // // 发送数据5次，每次间隔1秒
+            // for(uint8_t send_count = 0; send_count < 5; send_count++)
+            // {
+            //     printf("Send %d times: 01 02 03 04 05 06\r\n", send_count + 1);
+            //     uint8_t result = I2C_Host_SendData(0x02, TxData, Size);  // 使用7位地址
+            //     if(result == 0)
+            //     {
+            //         printf("Send successful\r\n");
+            //     }
+            //     else
+            //     {
+            //         printf("Send failed\r\n");
+            //     }
+            //     Delay_Ms(1000);  // 延时1秒
+            // }
+
             for(uint8_t send_count = 0; send_count < 5; send_count++)
             {
                 printf("Send %d times: 01 02 03 04 05 06\r\n", send_count + 1);
-                I2C_Host_SendData(0x02, TxData, Size);  // 发送数据
-                Delay_Ms(1000);  // 延时1秒
+                I2C_Soft_SendData(SlaveAddr, TxData, Size);  // 软件I2C发送
+                Delay_Ms(10);  // 间隔1秒
             }
-
-            printf("All data send finish! LED ON\r\n");
-            LED_blink(500);
+            while(1)
+            {
+                LED_blink(500);  // 数据发送完成后，LED持续闪烁
+            }
         #endif  
     }
 }

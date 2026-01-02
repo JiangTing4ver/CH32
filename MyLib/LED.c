@@ -4,6 +4,7 @@
 void LED_Init(void)
 {
     GPIO_OUT_SetInit(RCC_Periph_GPIO, GPIO_Port_CONTROL, GPIO_Pin_CONTROL);
+    GPIO_ResetBits(GPIOC, GPIO_Pin_13);
 }
 
 void LED_On(void)
