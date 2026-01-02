@@ -4,11 +4,9 @@
 #include "GPIO_contrl.h"
 #include "delay.h"
 
-#define DELAY_MS1 1000
-#define DELAY_MS2 100
 
 void LED_Init(void);
 void LED_On(void);
 void LED_Off(void);
-void LED_blink(void);
+void LED_blink(uint16_t delay_ms);
 #endif
