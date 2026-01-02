@@ -5,22 +5,15 @@
 #include "ch32f10x_rcc.h"
 #include "ch32f10x_i2c.h"
 
-// I2C端口定义
-#define MYIIC_SCL_PORT        GPIOB
-#define MYIIC_SCL_PIN         GPIO_Pin_6
-#define MYIIC_SDA_PORT        GPIOB
-#define MYIIC_SDA_PIN         GPIO_Pin_7
+/* 全局定义 */
+#define Size        6       // 每次发送的数据长度
+#define TxAddress   0x02    // 主机自身地址（可根据需求修改）
+#define SlaveAddr   0x02    // 目标从机地址（需和从机地址匹配）
+#define I2C_SPEED   80000   // I2C通信速率（80KHz）
 
-// I2C设备定义
-#define MYIIC_I2C             I2C1
-#define MYIIC_I2C_CLK         RCC_APB1Periph_I2C1
-#define MYIIC_I2C_GPIO_CLK    RCC_APB2Periph_GPIOB
+/* 全局变量 */
+extern uint8_t TxData[Size];  // 待发送的数据
 
-// 函数声明
-void MyIIC_Init(void);
-u8 MyIIC_ReadByte(u8 addr, u8 reg);
-u8 MyIIC_WriteByte(u8 addr, u8 reg, u8 data);
-u8 MyIIC_ReadBuffer(u8 addr, u8 reg, u8 *buf, u8 len);
-u8 MyIIC_WriteBuffer(u8 addr, u8 reg, u8 *buf, u8 len);
-
+void IIC_Init( u32 bound, u16 address );
+void I2C_Host_SendData(u8 slave_addr, u8 *data, u8 len);
 #endif // __MYIIC_H__

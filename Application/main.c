@@ -2,22 +2,22 @@
 
 #define LED 0
 #define HM 1
-#define GY520 2
 #define MyUSART1 3
 #define WS2812 4
+#define I2C 5
 
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
-// #define flag GY520  // 使用GY520功能
 // #define flag MyUSART1 // 使用USART1功能
-#define flag WS2812  // 使用WS2812功能
+// #define flag WS2812  // 使用WS2812功能
+#define flag I2C
 
 int main(void)
 {
     
     // 初始化系统时钟
     SystemInit();
-    
+    SystemCoreClockUpdate();
     // 初始化延时功能
     Delay_Init();
 
@@ -27,9 +27,6 @@ int main(void)
     #elif flag == HM
         // 初始化传感器
         MH_Sersor_Init();
-    #elif flag == GY520
-        // 初始化GY520
-        GY520_Init();
     #elif flag == MyUSART1
         // 初始化USART1
         USART1_Config(115200);
@@ -40,16 +37,17 @@ int main(void)
         // 初始化WS2812
         WS2812_Init();
         // PA8_test();
+    #elif flag == I2C
+        LED_Init();
+        IIC_Init(I2C_SPEED, TxAddress);
     #endif
     
     while(1)
     {
         #if flag == LED
-            LED_blink();
+            LED_blink(500);
         #elif flag == HM
             Note();
-        #elif flag == GY520
-            GY520_Update();
         #elif flag == MyUSART1
             RX_Process();
         #elif flag == WS2812
@@ -58,6 +56,17 @@ int main(void)
             WS2812_BreathingLight(8, 0, 0, 255, 200);
             WS2812_BreathingLight(8, 0, 255, 0, 100);
             WS2812_BreathingLight(8, 0, 255, 255, 80);
+        #elif flag == I2C
+            // 循环5次发送数据，每次间隔1秒
+            for(uint8_t send_count = 0; send_count < 5; send_count++)
+            {
+                printf("Send %d times: 01 02 03 04 05 06\r\n", send_count + 1);
+                I2C_Host_SendData(0x02, TxData, Size);  // 发送数据
+                Delay_Ms(1000);  // 延时1秒
+            }
+
+            printf("All data send finish! LED ON\r\n");
+            LED_blink(500);
         #endif  
     }
 }
