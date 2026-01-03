@@ -9,8 +9,8 @@
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
 // #define flag MyUSART1 // 使用USART1功能
-// #define flag WS2812  // 使用WS2812功能
-#define flag I2C
+#define flag WS2812  // 使用WS2812功能
+// #define flag I2C
 
 int main(void)
 {
@@ -52,11 +52,13 @@ int main(void)
         #elif flag == MyUSART1
             RX_Process();
         #elif flag == WS2812
+            WS2812_Color RED = WS2812_CreateColor(255, 0, 0);
+            WS2812_Fill(RED);
             // WS2812_RainbowWaterFlowEffect(200);
-            WS2812_BreathingLight(8, 255, 0, 0, 50);
-            WS2812_BreathingLight(8, 0, 0, 255, 200);
-            WS2812_BreathingLight(8, 0, 255, 0, 100);
-            WS2812_BreathingLight(8, 0, 255, 255, 80);
+            // WS2812_BreathingLight(8, 255, 0, 0, 50);
+            // WS2812_BreathingLight(8, 0, 0, 255, 200);
+            // WS2812_BreathingLight(8, 0, 255, 0, 100);
+            // WS2812_BreathingLight(8, 0, 255, 255, 80);
         #elif flag == I2C
             // // 发送数据5次，每次间隔1秒
             // for(uint8_t send_count = 0; send_count < 5; send_count++)
