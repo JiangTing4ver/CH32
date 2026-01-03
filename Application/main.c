@@ -15,10 +15,8 @@
 int main(void)
 {
     
-    // 初始化系统时钟
     SystemInit();
     SystemCoreClockUpdate();
-    // 初始化延时功能
     Delay_Init();
 
     #if flag == LED
