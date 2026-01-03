@@ -80,10 +80,7 @@ int main(void)
                 I2C_Soft_SendData(SlaveAddr, TxData, Size);  // 软件I2C发送
                 Delay_Ms(10);  // 间隔1秒
             }
-            while(1)
-            {
-                LED_blink(500);  // 数据发送完成后，LED持续闪烁
-            }
+            LED_blink(500);  // 数据发送完成后，LED持续闪烁
         #endif  
     }
 }
