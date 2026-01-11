@@ -5,12 +5,14 @@
 #define MyUSART1 2
 #define WS2812 3
 #define I2C 4
+#define BEEP 5
 
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
 // #define flag MyUSART1 // 使用USART1功能
-#define flag WS2812  // 使用WS2812功能
+// #define flag WS2812  // 使用WS2812功能
 // #define flag I2C
+#define flag BEEP
 
 int main(void)
 {
@@ -41,6 +43,9 @@ int main(void)
         LED_Init();
         // IIC_Init(I2C_SPEED, TxAddress);
         I2C_Soft_Init();
+    #elif flag == BEEP
+        BEEP_Init();
+
     #endif
     
     while(1)
@@ -83,6 +88,11 @@ int main(void)
                 Delay_Ms(10);  // 间隔1秒
             }
             LED_blink(500);  // 数据发送完成后，LED持续闪烁
+        #elif flag == BEEP
+            BEEP_On();
+            Delay_Ms(10);
+            BEEP_Off();
+            Delay_Ms(2000);
         #endif  
     }
 }
