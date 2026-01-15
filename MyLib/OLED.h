@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 #include "OLED_Data.h"
+#include <string.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdarg.h>
+#include "ch32f10x.h"
+
 
 /*参数宏定义*********************/
 
