@@ -6,13 +6,15 @@
 #define WS2812 3
 #define I2C 4
 #define BEEP 5
+#define OLED 6
 
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
 // #define flag MyUSART1 // 使用USART1功能
 // #define flag WS2812  // 使用WS2812功能
 // #define flag I2C
-#define flag BEEP
+// #define flag BEEP
+#define flag OLED
 
 int main(void)
 {
@@ -45,7 +47,11 @@ int main(void)
         I2C_Soft_Init();
     #elif flag == BEEP
         BEEP_Init();
-
+    #elif flag == OLED
+        OLED_Init();
+        OLED_ShowChar(0, 0, 'A', OLED_6X8);
+        OLED_ShowString(0, 16, "Hello World!", OLED_6X8);
+        OLED_ShowChar(0, 32, 'B', OLED_6X8);
     #endif
     
     while(1)
@@ -93,6 +99,8 @@ int main(void)
             Delay_Ms(10);
             BEEP_Off();
             Delay_Ms(2000);
+        #elif flag == OLED
+            // OLED_ShowChar(0, 32, 'B', FontSize_16x32);
         #endif  
     }
 }
