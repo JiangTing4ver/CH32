@@ -100,7 +100,7 @@ int main(void)
             BEEP_Off();
             Delay_Ms(2000);
         #elif flag == OLED
-            // OLED_ShowChar(0, 32, 'B', FontSize_16x32);
+            OLED_ShowChar(0, 32, 'B', OLED_6X8);
         #endif  
     }
 }
