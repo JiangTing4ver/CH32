@@ -20,6 +20,13 @@
 
 #include "OLED.h"
 
+/*引脚宏定义*********************/
+#define OLED_SCL_PORT    GPIOB
+#define OLED_SCL_PIN     GPIO_Pin_8
+#define OLED_SDA_PORT    GPIOB
+#define OLED_SDA_PIN     GPIO_Pin_9
+/*********************引脚宏定义*/
+
 
 /**
   * 数据存储格式：
@@ -93,10 +100,10 @@ uint8_t OLED_DisplayBuf[8][128];
 void OLED_W_SCL(uint8_t BitValue)
 {
 	/*根据BitValue的值，将SCL置高电平或者低电平*/
-	GPIO_WriteBit(GPIOB, GPIO_Pin_8, (BitAction)BitValue);
+	GPIO_WriteBit(OLED_SCL_PORT, OLED_SCL_PIN, (BitAction)BitValue);
 	
-	/*如果单片机速度过快，可在此添加适量延时，以避免超出I2C通信的最大速度*/
-	//...
+	/*添加延时，确保I2C通信速度不会过快*/
+	Delay_Ms(1);
 }
 
 /**
@@ -110,10 +117,10 @@ void OLED_W_SCL(uint8_t BitValue)
 void OLED_W_SDA(uint8_t BitValue)
 {
 	/*根据BitValue的值，将SDA置高电平或者低电平*/
-	GPIO_WriteBit(GPIOB, GPIO_Pin_9, (BitAction)BitValue);
+	GPIO_WriteBit(OLED_SDA_PORT, OLED_SDA_PIN, (BitAction)BitValue);
 	
-	/*如果单片机速度过快，可在此添加适量延时，以避免超出I2C通信的最大速度*/
-	//...
+	/*添加延时，确保I2C通信速度不会过快*/
+	Delay_Ms(1);
 }
 
 /**
@@ -139,10 +146,10 @@ void OLED_GPIO_Init(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
  	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
- 	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = OLED_SCL_PIN;
+ 	GPIO_Init(OLED_SCL_PORT, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = OLED_SDA_PIN;
+ 	GPIO_Init(OLED_SDA_PORT, &GPIO_InitStructure);
 	
 	/*释放SCL和SDA*/
 	OLED_W_SCL(1);
