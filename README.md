@@ -42,6 +42,10 @@
 │   ├── WS2812.c/h      # WS2812 灯带控制
 │   ├── gy520.c/h       # GY520 陀螺仪驱动
 │   └── myiic.c/h       # I2C 通信库
+│   └── Buzzer.c/h      # 蜂鸣器控制
+│   └── OLED
+│       └── OLED_Data.c/h   # OLED 显示模块
+│       └── OLED.c/h        # OLED 控制模块
 ├── Peripheral/         # 外设驱动库
 │   ├── inc/            # 外设头文件
 │   └── src/            # 外设源文件
