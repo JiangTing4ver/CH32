@@ -49,10 +49,7 @@ int main(void)
         BEEP_Init();
     #elif flag == OLED
         OLED_Init();
-        OLED_ShowChar(0, 0, 'A', OLED_6X8);
-        OLED_ShowString(0, 16, "Hello World!", OLED_6X8);
-        OLED_ShowChar(0, 32, 'B', OLED_6X8);
-        OLED_Update(); // 更新显示，将显存数据发送到OLED屏幕
+
     #endif
     
     while(1)
@@ -101,7 +98,10 @@ int main(void)
             BEEP_Off();
             Delay_Ms(2000);
         #elif flag == OLED
+            OLED_ShowChar(0, 0, 'A', OLED_6X8);
+            OLED_ShowString(0, 16, "Hello World!", OLED_6X8);
             OLED_ShowChar(0, 32, 'B', OLED_6X8);
+            OLED_DrawRectangle(0, 48, 64, 16, 1);
             OLED_Update(); // 更新显示，将显存数据发送到OLED屏幕
         #endif  
     }
