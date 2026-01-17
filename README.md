@@ -98,6 +98,22 @@ unify_builder -p build/Debug/builder.params --rebuild
 - **配置**: 灯带默认配置为8个LED灯珠（`WS2812_NUM_LEDS 8`）
 - **效果**: 支持呼吸灯、流水灯、彩虹流水灯等多种效果
 
+### 蜂鸣器
+- **功能**: 实现蜂鸣器的初始化和控制
+- **文件**: `MyLib/Buzzer.c` 和 `MyLib/Buzzer.h`
+- **使用**: 在 `main.c` 中定义 `#define flag Buzzer` 启用
+
+如何区分有源蜂鸣器和无源蜂鸣器？
+- 有源蜂鸣器：内部包含振荡电路，直接供电即可工作
+- 无源蜂鸣器：需要外部提供振荡信号才能工作
+  [✨有源蜂鸣器和无源区分：手把手教你辨认方法](https://blog.csdn.net/weixin_35753291/article/details/156169056?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522a992eb79840ff70eae87e331817e9a7d%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=a992eb79840ff70eae87e331817e9a7d&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-9-156169056-null-null.142^v102^pc_search_result_base7&utm_term=%E6%9C%89%E6%BA%90%E8%9C%82%E9%B8%A3%E5%99%A8%E5%92%8C%E6%97%A0%E6%BA%90%E5%8C%BA%E5%88%86)
+
+### OLED 显示模块
+- **功能**: 实现 OLED 屏幕的初始化和字符显示
+- **文件**: `MyLib/OLED_Data.c` 和 `MyLib/OLED_Data.h`
+- **使用**: 在 `main.c` 中定义 `#define flag OLED` 启用
+- 支持中文|英文|图片 字符显示
+
 
 ### 编译与烧录
 

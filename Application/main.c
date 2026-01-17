@@ -5,12 +5,16 @@
 #define MyUSART1 2
 #define WS2812 3
 #define I2C 4
+#define BEEP 5
+#define OLED 6
 
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
 // #define flag MyUSART1 // 使用USART1功能
 // #define flag WS2812  // 使用WS2812功能
-#define flag I2C
+// #define flag I2C
+// #define flag BEEP
+#define flag OLED
 
 int main(void)
 {
@@ -39,6 +43,12 @@ int main(void)
         LED_Init();
         // IIC_Init(I2C_SPEED, TxAddress);
         I2C_Soft_Init();
+    #elif flag == BEEP
+        BEEP_Init();
+    #elif flag == OLED
+        OLED_Init();
+        OLED_Clear();
+
     #endif
     
     while(1)
@@ -50,11 +60,13 @@ int main(void)
         #elif flag == MyUSART1
             RX_Process();
         #elif flag == WS2812
+            WS2812_Color RED = WS2812_CreateColor(255, 0, 0);
+            WS2812_Fill(RED);
             // WS2812_RainbowWaterFlowEffect(200);
-            WS2812_BreathingLight(8, 255, 0, 0, 50);
-            WS2812_BreathingLight(8, 0, 0, 255, 200);
-            WS2812_BreathingLight(8, 0, 255, 0, 100);
-            WS2812_BreathingLight(8, 0, 255, 255, 80);
+            // WS2812_BreathingLight(8, 255, 0, 0, 50);
+            // WS2812_BreathingLight(8, 0, 0, 255, 200);
+            // WS2812_BreathingLight(8, 0, 255, 0, 100);
+            // WS2812_BreathingLight(8, 0, 255, 255, 80);
         #elif flag == I2C
             // // 发送数据5次，每次间隔1秒
             // for(uint8_t send_count = 0; send_count < 5; send_count++)
@@ -78,10 +90,22 @@ int main(void)
                 I2C_Soft_SendData(SlaveAddr, TxData, Size);  // 软件I2C发送
                 Delay_Ms(10);  // 间隔1秒
             }
-            while(1)
-            {
-                LED_blink(500);  // 数据发送完成后，LED持续闪烁
-            }
+            LED_blink(500);  // 数据发送完成后，LED持续闪烁
+        #elif flag == BEEP
+            BEEP_On();
+            Delay_Ms(10);
+            BEEP_Off();
+            Delay_Ms(2000);
+        #elif flag == OLED
+            // OLED_ShowChar(0, 0, 'A', OLED_6X8);
+            // OLED_ShowString(0, 16, "Hello World!", OLED_6X8);
+            // OLED_ShowChar(0, 32, 'B', OLED_6X8);
+            // OLED_DrawRectangle(0, 48, 64, 16, 1);
+            // -----------------------------------
+            // 字模显示
+            // OLED_ShowChinese(5, 5, "你");        // 失败
+            OLED_ShowImage(0, 0, 16, 16, Diode);
+            OLED_Update(); // 更新显示，将显存数据发送到OLED屏幕
         #endif  
     }
 }
