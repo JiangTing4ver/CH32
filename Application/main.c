@@ -119,7 +119,7 @@ int main(void)
             OLED_Update(); // 更新显示，将显存数据发送到OLED屏幕
         #elif flag == ENCODER
             int16_t Encoder_Count = Encoder_Get();
-                OLED_ShowString(3, 3, "Encoder_Count:", OLED_6X8);
+                OLED_ShowString(80, 3, "Encoder_Count:", OLED_6X8);
                 OLED_ShowSignedNum(80, 16, Encoder_Count, 4, OLED_6X8);
                 OLED_Update();
         #endif  
