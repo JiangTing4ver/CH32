@@ -7,5 +7,6 @@
 // ---------------函数声明------------------
 void Encoder_Init(void);
 int16_t Encoder_Get(void);
+void Encoder_Process(void);
 
 #endif

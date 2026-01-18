@@ -103,7 +103,7 @@ void OLED_W_SCL(uint8_t BitValue)
 	GPIO_WriteBit(OLED_SCL_PORT, OLED_SCL_PIN, (BitAction)BitValue);
 	
 	/*添加延时，确保I2C通信速度不会过快*/
-	Delay_Ms(1);
+	Delay_Us(1);
 }
 
 /**
@@ -120,7 +120,7 @@ void OLED_W_SDA(uint8_t BitValue)
 	GPIO_WriteBit(OLED_SDA_PORT, OLED_SDA_PIN, (BitAction)BitValue);
 	
 	/*添加延时，确保I2C通信速度不会过快*/
-	Delay_Ms(1);
+	Delay_Us(1);
 }
 
 /**

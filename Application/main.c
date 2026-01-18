@@ -56,7 +56,7 @@ int main(void)
         OLED_Init();
         OLED_Clear();
         Encoder_Init();
-        OLED_ShowString(0, 0, "this is a encoder test", OLED_6X8);
+        OLED_ShowString(0, 0, "this is encoder test 1", OLED_6X8);
         OLED_Update();
 
 
@@ -118,10 +118,16 @@ int main(void)
             OLED_ShowImage(0, 0, 16, 16, Diode);
             OLED_Update(); // 更新显示，将显存数据发送到OLED屏幕
         #elif flag == ENCODER
+            int16_t Encoder_Total = 0;
             int16_t Encoder_Count = Encoder_Get();
-                OLED_ShowString(80, 3, "Encoder_Count:", OLED_6X8);
-                OLED_ShowSignedNum(80, 16, Encoder_Count, 4, OLED_6X8);
+            if(Encoder_Count != 0)
+            {
+                OLED_Clear();
+                Encoder_Total += Encoder_Count;
+                OLED_ShowString(0, 16, "Encoder_Count:", OLED_6X8);
+                OLED_ShowSignedNum(80, 16, Encoder_Total, 4, OLED_6X8);
                 OLED_Update();
+            }
         #endif  
     }
 }
