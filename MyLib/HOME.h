@@ -11,6 +11,7 @@
 #include "myiic.h"
 #include "Beep.h"
 #include "OLED.h"
+#include "Encoder.h"
 
 
 

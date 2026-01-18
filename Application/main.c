@@ -7,6 +7,7 @@
 #define I2C 4
 #define BEEP 5
 #define OLED 6
+#define ENCODER 7
 
 // #define flag LED  // 使用LED功能
 // #define flag HM     // 使用传感器功能
@@ -14,7 +15,8 @@
 // #define flag WS2812  // 使用WS2812功能
 // #define flag I2C
 // #define flag BEEP
-#define flag OLED
+// #define flag OLED
+#define flag ENCODER
 
 int main(void)
 {
@@ -50,6 +52,13 @@ int main(void)
     #elif flag == OLED
         OLED_Init();
         OLED_Clear();
+    # elif flag == ENCODER
+        OLED_Init();
+        OLED_Clear();
+        Encoder_Init();
+        OLED_ShowString(0, 0, "this is a encoder test", OLED_6X8);
+        OLED_Update();
+
 
     #endif
     
@@ -108,6 +117,11 @@ int main(void)
             // OLED_ShowChinese(5, 5, "你");        // 失败
             OLED_ShowImage(0, 0, 16, 16, Diode);
             OLED_Update(); // 更新显示，将显存数据发送到OLED屏幕
+        #elif flag == ENCODER
+            int16_t Encoder_Count = Encoder_Get();
+                OLED_ShowString(3, 3, "Encoder_Count:", OLED_6X8);
+                OLED_ShowSignedNum(80, 16, Encoder_Count, 4, OLED_6X8);
+                OLED_Update();
         #endif  
     }
 }
